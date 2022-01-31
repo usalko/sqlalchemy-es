@@ -73,6 +73,16 @@ echo =========== $COMMAND
 echo $COMMAND ===========
 echo COMMAND
 
+if [ "x$COMMAND" == "xpublish" ]; then
+    echo 'Publish on the pypi.org'
+    #!/bin/bash
+    rm -fr build
+    rm -fr dist
+    .venv/bin/python3 setup.py bdist_wheel
+    .venv/bin/python3 setup.py sdist
+    .venv/bin/twine upload dist/*
+fi
+
 if [ "x$COMMAND" == "xredeps" ]; then
     echo "Reinstall dependencies"
     .venv/bin/pip install -r requirements.txt
