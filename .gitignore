@@ -10,8 +10,9 @@ dist/
 docs/_build/
 .idea
 .idea/
-env
-venv
+.env
+.venv
 *.sublime*
 .vscode/
 .tox
+.pip
