@@ -1,4 +1,5 @@
-from sqlalchemy.dialects.es.exceptions import (
+from .api import connect
+from .exceptions import (
     DatabaseError,
     DataError,
     Error,
@@ -10,7 +11,6 @@ from sqlalchemy.dialects.es.exceptions import (
     ProgrammingError,
     Warning,
 )
-from sqlalchemy.dialects.es.aws.api import connect
 
 
 __all__ = [

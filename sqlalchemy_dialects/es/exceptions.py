@@ -1,5 +1,5 @@
 class Error(Exception):
-    """Base exception"""
+    '''Base exception'''
 
 
 class Warning(Exception):
@@ -39,10 +39,10 @@ class NotSupportedError(DatabaseError):
 
 
 class UnexpectedESInitError(Error):
-    """ Should never happen, when a cursor is requested
-    without an ElasticSearch object being initialized"""
+    ''' Should never happen, when a cursor is requested
+    without an ElasticSearch object being initialized'''
 
 
 class UnexpectedRequestResponse(Error):
-    """ When perform request returns False, only when HTTP method HEAD
-    and status code 404 """
+    ''' When perform request returns False, only when HTTP method HEAD
+    and status code 404 '''

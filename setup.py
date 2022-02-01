@@ -1,7 +1,7 @@
 import io
 import os
 
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 
 VERSION = '0.1.0a'
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -15,17 +15,17 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     version=VERSION,
-    packages=find_packages(),
+    packages=find_namespace_packages(),
     include_package_data=True,
     zip_safe=False,
     entry_points={
         'sqlalchemy.dialects': [
-            'elasticsearch = sqlalchemy.dialects.es:ESHTTPDialect',
-            'elasticsearch.http = sqlalchemy.dialects.es:ESHTTPDialect',
-            'elasticsearch.https = sqlalchemy.dialects.es:ESHTTPSDialect',
-            'elasticsearch.aws = sqlalchemy.dialects.es.aws:ESHTTPDialect',
-            'elasticsearch.aws.http = sqlalchemy.dialects.es.aws:ESHTTPDialect',
-            'elasticsearch.aws.https = sqlalchemy.dialects.es.aws:ESHTTPSDialect',
+            'es = sqlalchemy_dialects.es:ES_HTTP_DIALECT',
+            'es.http = sqlalchemy_dialects.es:ES_HTTP_DIALECT',
+            'es.https = sqlalchemy_dialects.es:ES_HTTP_DIALECT',
+            'es.aws = sqlalchemy_dialects.es.aws:ES_AWS_HTTP_DIALECT',
+            'es.aws.http = sqlalchemy_dialects.es.aws:ES_AWS_HTTP_DIALECT',
+            'es.aws.https = sqlalchemy_dialects.es.aws:ES_AWS_HTTP_DIALECT',
         ]
     },
     install_requires=['elasticsearch>7, <7.14', 'packaging>=21.0, <22.0', 'sqlalchemy'],

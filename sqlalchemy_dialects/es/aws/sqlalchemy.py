@@ -3,7 +3,7 @@ from types import ModuleType
 from typing import Any, Dict, List, Optional
 
 from es import basesqlalchemy
-import sqlalchemy.dialects.es.aws
+import sqlalchemy_dialects.es.aws
 from sqlalchemy.engine import Connection
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ class ESDialect(basesqlalchemy.BaseESDialect):
 
     @classmethod
     def dbapi(cls) -> ModuleType:
-        return sqlalchemy.dialects.es.aws
+        return sqlalchemy_dialects.es.aws
 
     def get_table_names(
         self, connection: Connection, schema: Optional[str] = None, **kwargs: Any
@@ -70,7 +70,7 @@ class ESDialect(basesqlalchemy.BaseESDialect):
         ]
 
 
-ESHTTPDialect = ESDialect
+ES_AWS_HTTP_DIALECT = ESDialect
 
 
 class ESHTTPSDialect(ESDialect):

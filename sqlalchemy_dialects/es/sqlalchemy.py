@@ -2,9 +2,12 @@ import logging
 from types import ModuleType
 from typing import Any, Dict, List, Optional
 
-from es import basesqlalchemy
-import sqlalchemy.dialects.es
+from sqlalchemy_dialects import es
+from sqlalchemy_dialects.es.const import SQLALCHEMY_DIALECTS_ES
+
 from sqlalchemy.engine import Connection
+
+from . import basesqlalchemy
 
 logger = logging.getLogger(__name__)
 
@@ -19,31 +22,31 @@ class ESTypeCompiler(basesqlalchemy.BaseESTypeCompiler):
 
 class ESDialect(basesqlalchemy.BaseESDialect):
 
-    name = "elasticsearch"
-    scheme = "http"
-    driver = "rest"
+    name = SQLALCHEMY_DIALECTS_ES
+    scheme = 'http'
+    driver = 'rest'
     statement_compiler = ESCompiler
     type_compiler = ESTypeCompiler
 
     @classmethod
     def dbapi(cls) -> ModuleType:
-        return sqlalchemy.dialects.es
+        return es
 
     def get_table_names(
         self, connection: Connection, schema: Optional[str] = None, **kwargs: Any
     ) -> List[str]:
-        query = "SHOW VALID_TABLES"
+        query = 'SHOW VALID_TABLES'
         result = connection.execute(query)
         # return a list of table names exclude hidden and empty indexes
-        return [table.name for table in result if table.name[0] != "."]
+        return [table.name for table in result if table.name[0] != '.']
 
     def get_view_names(
         self, connection: Connection, schema: Optional[str] = None, **kwargs: Any
     ) -> List[str]:
-        query = "SHOW VALID_VIEWS"
+        query = 'SHOW VALID_VIEWS'
         result = connection.execute(query)
         # return a list of view names (ES aliases) exclude hidden and empty indexes
-        return [table.name for table in result if table.name[0] != "."]
+        return [table.name for table in result if table.name[0] != '.']
 
     def get_columns(
         self,
@@ -55,7 +58,7 @@ class ESDialect(basesqlalchemy.BaseESDialect):
         query = f'SHOW COLUMNS FROM "{table_name}"'
         # Custom SQL
         array_columns_ = connection.execute(
-            f"SHOW ARRAY_COLUMNS FROM {table_name}"
+            f'SHOW ARRAY_COLUMNS FROM {table_name}'
         ).fetchall()
         # convert cursor rows: List[Tuple[str]] to List[str]
         if not array_columns_:
@@ -66,10 +69,10 @@ class ESDialect(basesqlalchemy.BaseESDialect):
         all_columns = connection.execute(query)
         return [
             {
-                "name": row.column,
-                "type": basesqlalchemy.get_type(row.mapping),
-                "nullable": True,
-                "default": None,
+                'name': row.column,
+                'type': basesqlalchemy.get_type(row.mapping),
+                'nullable': True,
+                'default': None,
             }
             for row in all_columns
             if row.mapping not in self._not_supported_column_types
@@ -77,10 +80,10 @@ class ESDialect(basesqlalchemy.BaseESDialect):
         ]
 
 
-ESHTTPDialect = ESDialect
+ES_HTTP_DIALECT = ESDialect
 
 
 class ESHTTPSDialect(ESDialect):
 
-    scheme = "https"
-    default_paramstyle = "pyformat"
+    scheme = 'https'
+    default_paramstyle = 'pyformat'

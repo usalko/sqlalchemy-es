@@ -6,9 +6,8 @@ from __future__ import unicode_literals
 import logging
 from typing import Any, List, Type
 
-import es
-from es import exceptions
-from es.const import DEFAULT_SCHEMA
+from . import exceptions
+from .const import DEFAULT_SCHEMA
 from sqlalchemy import types
 from sqlalchemy.engine import default
 from sqlalchemy.sql import compiler
@@ -18,31 +17,31 @@ logger = logging.getLogger(__name__)
 
 
 def parse_bool_argument(value: str) -> bool:
-    if value in ("True", "true"):
+    if value in ('True', 'true'):
         return True
-    elif value in ("False", "false"):
+    elif value in ('False', 'false'):
         return False
     else:
-        raise ValueError(f"Expected boolean found {value}")
+        raise ValueError(f'Expected boolean found {value}')
 
 
 class BaseESCompiler(compiler.SQLCompiler):
     def visit_fromclause(self, fromclause: str, **kwargs: Any):
-        return fromclause.replace("default.", "")
+        return fromclause.replace('default.', '')
 
     def visit_label(self, *args, **kwargs):
         if len(kwargs) == 0 or len(kwargs) == 1:
-            kwargs["render_label_as_label"] = args[0]
+            kwargs['render_label_as_label'] = args[0]
         result = super().visit_label(*args, **kwargs)
         return result
 
 
 class BaseESTypeCompiler(compiler.GenericTypeCompiler):
     def visit_REAL(self, type_, **kwargs: Any) -> str:
-        return "DOUBLE"
+        return 'DOUBLE'
 
     def visit_NUMERIC(self, type_, **kwargs: Any) -> str:
-        return "LONG"
+        return 'LONG'
 
     visit_DECIMAL = visit_NUMERIC
     visit_INTEGER = visit_NUMERIC
@@ -53,7 +52,7 @@ class BaseESTypeCompiler(compiler.GenericTypeCompiler):
     visit_DATE = visit_NUMERIC
 
     def visit_CHAR(self, type_, **kwargs: Any) -> str:
-        return "STRING"
+        return 'STRING'
 
     visit_NCHAR = visit_CHAR
     visit_VARCHAR = visit_CHAR
@@ -61,32 +60,32 @@ class BaseESTypeCompiler(compiler.GenericTypeCompiler):
     visit_TEXT = visit_CHAR
 
     def visit_DATETIME(self, type_, **kwargs: Any) -> str:
-        return "DATETIME"
+        return 'DATETIME'
 
     def visit_TIME(self, type_, **kwargs: Any) -> str:
-        raise exceptions.NotSupportedError("Type TIME is not supported")
+        raise exceptions.NotSupportedError('Type TIME is not supported')
 
     def visit_BINARY(self, type_, **kwargs: Any) -> str:
-        raise exceptions.NotSupportedError("Type BINARY is not supported")
+        raise exceptions.NotSupportedError('Type BINARY is not supported')
 
     def visit_VARBINARY(self, type_, **kwargs: Any) -> str:
-        raise exceptions.NotSupportedError("Type VARBINARY is not supported")
+        raise exceptions.NotSupportedError('Type VARBINARY is not supported')
 
     def visit_BLOB(self, type_, **kwargs: Any) -> str:
-        raise exceptions.NotSupportedError("Type BLOB is not supported")
+        raise exceptions.NotSupportedError('Type BLOB is not supported')
 
     def visit_CLOB(self, type_, **kwargs: Any) -> str:
-        raise exceptions.NotSupportedError("Type CBLOB is not supported")
+        raise exceptions.NotSupportedError('Type CBLOB is not supported')
 
     def visit_NCLOB(self, type_, **kwargs: Any) -> str:
-        raise exceptions.NotSupportedError("Type NCBLOB is not supported")
+        raise exceptions.NotSupportedError('Type NCBLOB is not supported')
 
 
 class BaseESDialect(default.DefaultDialect):
 
-    name = "SET"
-    scheme = "SET"
-    driver = "SET"
+    name = 'SET'
+    scheme = 'SET'
+    driver = 'SET'
     statement_compiler: Type[BaseESCompiler] = BaseESCompiler
     type_compiler: Type[BaseESTypeCompiler] = BaseESTypeCompiler
     preparer = compiler.IdentifierPreparer
@@ -101,20 +100,20 @@ class BaseESDialect(default.DefaultDialect):
     supports_native_boolean = True
     supports_simple_order_by_label = True
 
-    _not_supported_column_types = ["object", "nested"]
+    _not_supported_column_types = ['object', 'nested']
 
     _map_parse_connection_parameters = {
-        "verify_certs": parse_bool_argument,
-        "use_ssl": parse_bool_argument,
-        "http_compress": parse_bool_argument,
-        "sniff_on_start": parse_bool_argument,
-        "sniff_on_connection_fail": parse_bool_argument,
-        "retry_on_timeout": parse_bool_argument,
-        "sniffer_timeout": int,
-        "sniff_timeout": int,
-        "max_retries": int,
-        "maxsize": int,
-        "timeout": int,
+        'verify_certs': parse_bool_argument,
+        'use_ssl': parse_bool_argument,
+        'http_compress': parse_bool_argument,
+        'sniff_on_start': parse_bool_argument,
+        'sniff_on_connection_fail': parse_bool_argument,
+        'retry_on_timeout': parse_bool_argument,
+        'sniffer_timeout': int,
+        'sniff_timeout': int,
+        'max_retries': int,
+        'maxsize': int,
+        'timeout': int,
     }
 
     @classmethod
@@ -123,12 +122,12 @@ class BaseESDialect(default.DefaultDialect):
 
     def create_connect_args(self, url):
         kwargs = {
-            "host": url.host,
-            "port": url.port or 9200,
-            "path": url.database,
-            "scheme": self.scheme,
-            "user": url.username or None,
-            "password": url.password or None,
+            'host': url.host,
+            'port': url.port or 9200,
+            'path': url.database,
+            'scheme': self.scheme,
+            'user': url.username or None,
+            'password': url.password or None,
         }
         if url.query:
             kwargs.update(url.query)
@@ -159,7 +158,7 @@ class BaseESDialect(default.DefaultDialect):
         return {}
 
     def get_pk_constraint(self, connection, table_name, schema=None, **kwargs):
-        return {"constrained_columns": [], "name": None}
+        return {'constrained_columns': [], 'name': None}
 
     def get_foreign_keys(self, connection, table_name, schema=None, **kwargs):
         return []
@@ -168,7 +167,7 @@ class BaseESDialect(default.DefaultDialect):
         return []
 
     def get_table_comment(self, connection, table_name, schema=None, **kwargs):
-        return {"text": ""}
+        return {'text': ''}
 
     def get_indexes(self, connection, table_name, schema=None, **kwargs):
         return []
@@ -191,26 +190,26 @@ class BaseESDialect(default.DefaultDialect):
 
 def get_type(data_type: str) -> int:
     type_map = {
-        "bytes": types.LargeBinary,
-        "boolean": types.Boolean,
-        "date": types.DateTime,
-        "datetime": types.DateTime,
-        "double": types.Numeric,
-        "text": types.String,
-        "keyword": types.String,
-        "integer": types.Integer,
-        "half_float": types.Float,
-        "geo_point": types.String,
+        'bytes': types.LargeBinary,
+        'boolean': types.Boolean,
+        'date': types.DateTime,
+        'datetime': types.DateTime,
+        'double': types.Numeric,
+        'text': types.String,
+        'keyword': types.String,
+        'integer': types.Integer,
+        'half_float': types.Float,
+        'geo_point': types.String,
         # TODO get a solution for nested type
-        "nested": types.String,
+        'nested': types.String,
         # TODO get a solution for object
-        "object": types.BLOB,
-        "long": types.BigInteger,
-        "float": types.Float,
-        "ip": types.String,
+        'object': types.BLOB,
+        'long': types.BigInteger,
+        'float': types.Float,
+        'ip': types.String,
     }
     type_ = type_map.get(data_type)
     if not type_:
-        logger.warning(f"Unknown type found {data_type} reverting to string")
+        logger.warning(f'Unknown type found {data_type} reverting to string')
         type_ = types.String
     return type_

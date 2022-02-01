@@ -34,7 +34,7 @@ $ pip install elasticsearch-dbapi[opendistro]
 #### Using DBAPI:
 
 ```python
-from sqlalchemy.dialects.es.api import connect
+from sqlalchemy_dialects.es.api import connect
 
 conn = connect(host='localhost')
 curs = conn.cursor()
@@ -49,7 +49,7 @@ print([row for row in curs])
 ```python
 from sqlalchemy.engine import create_engine
 
-engine = create_engine("elasticsearch+http://localhost:9200/")
+engine = create_engine("es+http://localhost:9200/")
 rows = engine.connect().execute(
     "select * from flights LIMIT 10"
 )
@@ -64,7 +64,7 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import MetaData, Table
 
 
-engine = create_engine("elasticsearch+http://localhost:9200/")
+engine = create_engine("es+http://localhost:9200/")
 logs = Table("flights", MetaData(bind=engine), autoload=True)
 count = select([func.count("*")], from_obj=logs).scalar()
 print(f"COUNT: {count}")
@@ -77,7 +77,7 @@ print(f"COUNT: {count}")
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import Table, MetaData
 
-engine = create_engine("elasticsearch+http://localhost:9200/")
+engine = create_engine("es+http://localhost:9200/")
 logs = Table("flights", MetaData(bind=engine), autoload=True)
 print(engine.table_names())
 
@@ -114,7 +114,7 @@ is limited to 10000. This can be adapted through the `fetch_size`
 parameter:
 
 ```python
-from sqlalchemy.dialects.es.api import connect
+from sqlalchemy_dialects.es.api import connect
 
 conn = connect(host="localhost", fetch_size=1000)
 curs = conn.cursor()
@@ -130,7 +130,7 @@ By default, elasticsearch query time zone defaults to `Z` (UTC). This can be ada
 parameter:
 
 ```python
-from sqlalchemy.dialects.es.api import connect
+from sqlalchemy_dialects.es.api import connect
 
 conn = connect(host="localhost", time_zone="Asia/Shanghai")
 curs = conn.cursor()
@@ -164,7 +164,7 @@ print([row for row in rows])
 
 Or using DBAPI:
 ```python
-from sqlalchemy.dialects.es.aws.api import connect
+from sqlalchemy_dialects.es.aws.api import connect
 
 conn = connect(host='localhost',port=9200,path="", scheme="http")
 

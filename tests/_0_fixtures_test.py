@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from .fixtures.fixtures import (
+from tests.fixtures.fixtures import (
     create_alias,
     delete_alias,
     delete_index,

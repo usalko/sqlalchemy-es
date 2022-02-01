@@ -8,15 +8,15 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from elasticsearch.exceptions import ConnectionError
-from es import exceptions
-from es.baseapi import (
+from sqlalchemy_dialects.es import exceptions
+from sqlalchemy_dialects.es.baseapi import (
     apply_parameters,
     BaseConnection,
     BaseCursor,
     check_closed,
     get_description_from_columns,
 )
-from es.const import DEFAULT_SCHEMA
+from sqlalchemy_dialects.es.const import DEFAULT_SCHEMA
 
 
 def connect(
