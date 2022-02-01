@@ -3,23 +3,23 @@ from types import ModuleType
 from typing import Any, Dict, List, Optional
 
 from es import basesqlalchemy
-import es.elastic
+import sqlalchemy.dialects.es.aws
 from sqlalchemy.engine import Connection
 
 logger = logging.getLogger(__name__)
 
 
-class ESCompiler(basesqlalchemy.BaseESCompiler):
+class ESCompiler(basesqlalchemy.BaseESCompiler):  # pragma: no cover
     pass
 
 
-class ESTypeCompiler(basesqlalchemy.BaseESTypeCompiler):
+class ESTypeCompiler(basesqlalchemy.BaseESTypeCompiler):  # pragma: no cover
     pass
 
 
 class ESDialect(basesqlalchemy.BaseESDialect):
 
-    name = "elasticsearch"
+    name = "odelasticsearch"
     scheme = "http"
     driver = "rest"
     statement_compiler = ESCompiler
@@ -27,23 +27,25 @@ class ESDialect(basesqlalchemy.BaseESDialect):
 
     @classmethod
     def dbapi(cls) -> ModuleType:
-        return es.elastic
+        return sqlalchemy.dialects.es.aws
 
     def get_table_names(
         self, connection: Connection, schema: Optional[str] = None, **kwargs: Any
     ) -> List[str]:
+        # custom builtin query
         query = "SHOW VALID_TABLES"
         result = connection.execute(query)
         # return a list of table names exclude hidden and empty indexes
-        return [table.name for table in result if table.name[0] != "."]
+        return [table.TABLE_NAME for table in result if table.TABLE_NAME[0] != "."]
 
     def get_view_names(
         self, connection: Connection, schema: Optional[str] = None, **kwargs: Any
     ) -> List[str]:
+        # custom builtin query
         query = "SHOW VALID_VIEWS"
         result = connection.execute(query)
-        # return a list of view names (ES aliases) exclude hidden and empty indexes
-        return [table.name for table in result if table.name[0] != "."]
+        # return a list of table names exclude hidden and empty indexes
+        return [table.VIEW_NAME for table in result if table.VIEW_NAME[0] != "."]
 
     def get_columns(
         self,
@@ -52,28 +54,19 @@ class ESDialect(basesqlalchemy.BaseESDialect):
         schema: Optional[str] = None,
         **kwargs: Any,
     ) -> List[Dict[str, Any]]:
-        query = f'SHOW COLUMNS FROM "{table_name}"'
-        # Custom SQL
-        array_columns_ = connection.execute(
-            f"SHOW ARRAY_COLUMNS FROM {table_name}"
-        ).fetchall()
-        # convert cursor rows: List[Tuple[str]] to List[str]
-        if not array_columns_:
-            array_columns = []
-        else:
-            array_columns = [col_name.name for col_name in array_columns_]
+        # custom builtin query
+        query = f"SHOW VALID_COLUMNS FROM {table_name}"
 
-        all_columns = connection.execute(query)
+        result = connection.execute(query)
         return [
             {
-                "name": row.column,
-                "type": basesqlalchemy.get_type(row.mapping),
+                "name": row.COLUMN_NAME,
+                "type": basesqlalchemy.get_type(row.TYPE_NAME),
                 "nullable": True,
                 "default": None,
             }
-            for row in all_columns
-            if row.mapping not in self._not_supported_column_types
-            and row.column not in array_columns
+            for row in result
+            if row.TYPE_NAME not in self._not_supported_column_types
         ]
 
 
@@ -84,3 +77,4 @@ class ESHTTPSDialect(ESDialect):
 
     scheme = "https"
     default_paramstyle = "pyformat"
+    _not_supported_column_types = ["nested", "geo_point", "alias"]

@@ -16,3 +16,4 @@ docs/_build/
 .vscode/
 .tox
 .pip
+.env

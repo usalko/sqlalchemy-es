@@ -1,5 +1,4 @@
-from es.elastic.api import connect
-from es.exceptions import (
+from sqlalchemy.dialects.es.exceptions import (
     DatabaseError,
     DataError,
     Error,
@@ -11,6 +10,7 @@ from es.exceptions import (
     ProgrammingError,
     Warning,
 )
+from sqlalchemy.dialects.es.aws.api import connect
 
 
 __all__ = [

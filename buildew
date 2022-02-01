@@ -64,6 +64,12 @@ if [ -f '.env' ]; then
 else
     # REGENERATE SENSITIVE INFO FROM TEMPLATE
     cat >'.env' <<EOF
+discovery.type=single-node
+opendistro_security.disabled:true
+# ELASTIC_USERNAME=elastic
+# ELASTIC_PASSWORD=PleaseChangeMe
+# xpack.security.enabled=true
+# xpack.license.self_generated.type=trial
 PYTHONPATH=.
 EOF
 fi

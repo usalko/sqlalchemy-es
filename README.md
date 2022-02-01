@@ -1,6 +1,6 @@
-# ElasticSearch DBAPI
+# ElasticSearch Dialect for SQLAlchemy
 
-
+<!-- 
 [![Build Status](https://github.com/preset-io/elasticsearch-dbapi/workflows/Python/badge.svg)](https://github.com/preset-io/elasticsearch-dbapi/actions)
 [![PyPI version](https://badge.fury.io/py/elasticsearch-dbapi.svg)](https://badge.fury.io/py/elasticsearch-dbapi)
 [![Coverage Status](https://codecov.io/github/preset-io/elasticsearch-dbapi/coverage.svg?branch=master)](https://codecov.io/github/preset-io/elasticsearch-dbapi)
@@ -34,7 +34,7 @@ $ pip install elasticsearch-dbapi[opendistro]
 #### Using DBAPI:
 
 ```python
-from es.elastic.api import connect
+from sqlalchemy.dialects.es.api import connect
 
 conn = connect(host='localhost')
 curs = conn.cursor()
@@ -114,7 +114,7 @@ is limited to 10000. This can be adapted through the `fetch_size`
 parameter:
 
 ```python
-from es.elastic.api import connect
+from sqlalchemy.dialects.es.api import connect
 
 conn = connect(host="localhost", fetch_size=1000)
 curs = conn.cursor()
@@ -130,7 +130,7 @@ By default, elasticsearch query time zone defaults to `Z` (UTC). This can be ada
 parameter:
 
 ```python
-from es.elastic.api import connect
+from sqlalchemy.dialects.es.api import connect
 
 conn = connect(host="localhost", time_zone="Asia/Shanghai")
 curs = conn.cursor()
@@ -164,7 +164,7 @@ print([row for row in rows])
 
 Or using DBAPI:
 ```python
-from es.opendistro.api import connect
+from sqlalchemy.dialects.es.aws.api import connect
 
 conn = connect(host='localhost',port=9200,path="", scheme="http")
 
@@ -241,4 +241,4 @@ SQLAlchemy `get_columns` will exclude them.
   * You are only able to `GROUP BY` keyword fields (new [experimental](https://github.com/opendistro-for-elasticsearch/sql#experimental)
  opendistro SQL already supports it)
   * Indices with dots are not supported (indices like 'audit_log.2021.01.20'),
-  on these cases we recommend the use of aliases
+  on these cases we recommend the use of aliases -->

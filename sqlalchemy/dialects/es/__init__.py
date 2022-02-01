@@ -1,5 +1,5 @@
-from es.elastic.api import connect
-from es.exceptions import (
+from sqlalchemy.dialects.es.api import connect
+from sqlalchemy.dialects.es.exceptions import (
     DatabaseError,
     DataError,
     Error,
